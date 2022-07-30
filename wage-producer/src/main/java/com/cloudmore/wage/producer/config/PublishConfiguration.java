@@ -1,6 +1,6 @@
 package com.cloudmore.wage.producer.config;
 
-import com.cloudmore.wage.producer.dto.UserWage;
+import com.cloudmore.wage.model.UserWage;
 import com.cloudmore.wage.producer.service.WagePublishService;
 import com.cloudmore.wage.producer.service.WagePublishServiceImpl;
 import org.springframework.beans.factory.annotation.Value;

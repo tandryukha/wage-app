@@ -1,6 +1,6 @@
 package com.cloudmore.wage.producer.config;
 
-import com.cloudmore.wage.producer.dto.UserWage;
+import com.cloudmore.wage.model.UserWage;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,7 +25,7 @@ public class KafkaProducerConfig {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServerUrl);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        props.put(JsonSerializer.TYPE_MAPPINGS, "UserWage:com.cloudmore.wage.producer.dto.UserWage");
+        props.put(JsonSerializer.TYPE_MAPPINGS, "UserWage:com.cloudmore.wage.model.UserWage");
 
         return props;
     }

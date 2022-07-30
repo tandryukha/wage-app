@@ -1,6 +1,6 @@
 package com.cloudmore.wage.producer.service;
 
-import com.cloudmore.wage.producer.dto.UserWage;
+import com.cloudmore.wage.model.UserWage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;

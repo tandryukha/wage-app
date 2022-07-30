@@ -1,7 +1,7 @@
 package com.cloudmore.wage.producer;
 
+import com.cloudmore.wage.model.UserWage;
 import com.cloudmore.wage.producer.controller.WageController;
-import com.cloudmore.wage.producer.dto.UserWage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.NewTopic;
@@ -34,9 +34,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @Testcontainers
@@ -67,7 +65,7 @@ public class SpringBootKafkaProducerIT {
     }
 
     @Test
-    public void shouldPublishWage() throws IOException, InterruptedException, ExecutionException {
+    public void shouldPublishWage() throws IOException, InterruptedException, ExecutionException {//todo refactor to simplify
         // first create the user-wage-topic topic
         String topicName = "user-wage-topic";
         NewTopic topic1 = TopicBuilder.name(topicName).build();
@@ -84,9 +82,8 @@ public class SpringBootKafkaProducerIT {
         props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, ErrorHandlingDeserializer.class);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-        props.put(JsonDeserializer.TYPE_MAPPINGS, "UserWage:com.cloudmore.wage.producer.dto.UserWage");
+        props.put(JsonDeserializer.TYPE_MAPPINGS, "UserWage:com.cloudmore.wage.model.UserWage");
         KafkaConsumer<Integer, UserWage> consumer = new KafkaConsumer<>(props);
-
 
         consumer.subscribe(Collections.singletonList(topicName));
 

@@ -1,4 +1,4 @@
-package com.cloudmore.wage.consumer.kafka;
+package com.cloudmore.wage.consumer.listener;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -10,6 +10,7 @@ import java.util.concurrent.CountDownLatch;
 @Component
 @Slf4j
 public class KafkaConsumer {
+    //todo cleanup
     private CountDownLatch latch = new CountDownLatch(1);
     private String payload;
 

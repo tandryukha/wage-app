@@ -8,8 +8,12 @@
     <name>wage-app</name>
     <description>wage-app</description>
     <packaging>pom</packaging>
+    <properties>
+        <java.version>17</java.version>
+    </properties>
 
     <modules>
+        <module>model</module>
         <module>wage-producer</module>
         <module>wage-consumer</module>
     </modules>
