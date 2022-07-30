@@ -9,7 +9,6 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.IntegerSerializer;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +22,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.KafkaContainer;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
@@ -43,8 +44,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 public class SpringBootKafkaConsumerIT {
 
-    static KafkaContainer kafka;
+    @Container
+    public static MySQLContainer<?> mySqlDB = new MySQLContainer<>("mysql:8.0.30")
+            .withDatabaseName("wage-db")
+            .withUsername("admin")
+            .withPassword("admin");
 
+    static KafkaContainer kafka;
     static {
         kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1"));
         kafka.start();
@@ -53,10 +59,8 @@ public class SpringBootKafkaConsumerIT {
     @Autowired
     private KafkaAdmin admin;
 
-
     @Test
     public void shouldReceiveWage(CapturedOutput output) throws IOException, InterruptedException, ExecutionException {
-        // first create the create-employee-events topic
         String topicName = "user-wage-topic";
         NewTopic topic1 = TopicBuilder.name(topicName).build();
 
@@ -81,15 +85,15 @@ public class SpringBootKafkaConsumerIT {
 
         Thread.sleep(1000);
         assertThat(output).contains("UserWage{name='Bill', surname='Gates', wage=1000000.4}");
-
-
     }
 
     @DynamicPropertySource
     public static void properties(DynamicPropertyRegistry registry) {
         registry.add("spring.kafka.bootstrap-servers", kafka::getBootstrapServers);
 
-
+        registry.add("spring.datasource.url", mySqlDB::getJdbcUrl);
+        registry.add("spring.datasource.username", mySqlDB::getUsername);
+        registry.add("spring.datasource.password", mySqlDB::getPassword);
     }
 
 }
