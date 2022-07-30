@@ -14,7 +14,7 @@ public class KafkaConsumer {
     private CountDownLatch latch = new CountDownLatch(1);
     private String payload;
 
-    @KafkaListener(topics = "${test.topic}")
+    @KafkaListener(groupId ="groups", topics = "${messaging.user-wage-topic}")
     public void receive(ConsumerRecord<?, ?> consumerRecord) {
         log.info("received payload='{}'", consumerRecord.toString());
         payload = consumerRecord.toString();
