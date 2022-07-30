@@ -28,6 +28,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,7 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext
 @ExtendWith(OutputCaptureExtension.class)
 @Slf4j
-public class SpringBootKafkaConsumerIT {
+public class SpringBootWageListenerIT {
 
     @Container
     public static MySQLContainer<?> mySqlDB = new MySQLContainer<>("mysql:8.0.30")
@@ -77,14 +78,14 @@ public class SpringBootKafkaConsumerIT {
         UserWage userWage = UserWage.builder()
                 .name("Bill")
                 .surname("Gates")
-                .wage(1000000.4)
+                .wage(BigDecimal.valueOf(1000000.4))
                 .eventTime(Instant.now())
                 .build();
 
         producer.send(new ProducerRecord<>(topicName, userWage)).get();
 
         Thread.sleep(1000);
-        assertThat(output).contains("UserWage{name='Bill', surname='Gates', wage=1000000.4}");
+        assertThat(output).contains("UserWage{name='Bill', surname='Gates', wage=1100000.44}");
     }
 
     @DynamicPropertySource

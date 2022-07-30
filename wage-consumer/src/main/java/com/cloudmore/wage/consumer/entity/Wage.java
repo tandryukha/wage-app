@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
+import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
@@ -20,7 +21,7 @@ public class Wage {
     @NotEmpty
     private String surname;
     @NotNull
-    private Double wage;
+    private BigDecimal wage;
     @NotNull
     private Instant eventTime;
 
