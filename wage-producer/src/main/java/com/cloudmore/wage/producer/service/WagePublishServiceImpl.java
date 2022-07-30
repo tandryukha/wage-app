@@ -1,17 +1,20 @@
 package com.cloudmore.wage.producer.service;
 
 import com.cloudmore.wage.producer.dto.UserWage;
-import com.cloudmore.wage.producer.topic.MessageProducer;
-import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.core.KafkaTemplate;
 
 @RequiredArgsConstructor
+@Slf4j
 public class WagePublishServiceImpl implements WagePublishService {
-    private final MessageProducer messageProducer;
     private final String wageTopic;
+    private final KafkaTemplate<Integer, UserWage> kafkaTemplate;
+
 
     @Override
     public void publishWage(UserWage wage) {
-        messageProducer.send(wageTopic, wage);
+        log.info("sending payload='{}' to topic='{}'", wage, wageTopic);
+        kafkaTemplate.send(wageTopic, wage);
     }
 }

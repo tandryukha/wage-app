@@ -10,11 +10,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
-import org.assertj.core.api.Assertions;
-import org.jose4j.jwk.Use;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.config.TopicBuilder;
@@ -63,18 +59,17 @@ public class SpringBootKafkaProducerIT {
 
 
     @Test
-    public void testCreationOfTopicAtStartup() throws IOException, InterruptedException, ExecutionException {
+    public void shouldCreateWageTopicAtStartup() throws IOException, InterruptedException, ExecutionException {
         AdminClient client = AdminClient.create(admin.getConfigurationProperties());
         Collection<TopicListing> topicList = client.listTopics().listings().get();
         assertNotNull(topicList);
-        assertEquals(topicList.stream().map(l -> l.name()).collect(Collectors.toList()), Arrays.asList("create-employee-events", "springboot-topic"));
+        assertEquals(topicList.stream().map(TopicListing::name).collect(Collectors.toList()), List.of("user-wage-topic"));
     }
-
 
     @Test
     public void shouldPublishWage() throws IOException, InterruptedException, ExecutionException {
-        // first create the create-employee-events topic
-        String topicName = "create-employee-events";
+        // first create the user-wage-topic topic
+        String topicName = "user-wage-topic";
         NewTopic topic1 = TopicBuilder.name(topicName).build();
 
         AdminClient client = AdminClient.create(admin.getConfigurationProperties());
@@ -89,7 +84,7 @@ public class SpringBootKafkaProducerIT {
         props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, ErrorHandlingDeserializer.class);
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-        props.put(JsonDeserializer.TYPE_MAPPINGS, "Employee:dev.fullstackcode.kafka.producer.dto.Employee");
+        props.put(JsonDeserializer.TYPE_MAPPINGS, "UserWage:com.cloudmore.wage.producer.dto.UserWage");
         KafkaConsumer<Integer, UserWage> consumer = new KafkaConsumer<>(props);
 
 
@@ -104,9 +99,9 @@ public class SpringBootKafkaProducerIT {
         wageController.publishWage(userWage);
 
         Collection<TopicListing> topicList = client.listTopics().listings().get();
-        assertEquals(topicList.size(), 2);
+        assertEquals(topicList.size(), 1);
         List<String> topicNameList = topicList.stream().map(l -> l.name()).collect(Collectors.toList());
-        List<String> expectedTopicNameList = Arrays.asList("springboot-topic", "create-employee-events");
+        List<String> expectedTopicNameList = List.of("user-wage-topic");
         assertTrue(topicNameList.containsAll(expectedTopicNameList) && expectedTopicNameList.containsAll(topicNameList));
 
         await().atMost(20, TimeUnit.SECONDS).until(() -> {
