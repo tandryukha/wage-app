@@ -5,16 +5,21 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
 import java.time.Instant;
+
+import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Getter
 @Setter
 public class Wage {
     @Id
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     @NotEmpty
     private String name;

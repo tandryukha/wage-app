@@ -11,7 +11,8 @@ import java.util.List;
 /**
  * Exists to make application more testable
  */
-@RestController("/wage")
+@RestController
+@RequestMapping("/wage")
 @RequiredArgsConstructor
 public class WageController {
 
