@@ -3,7 +3,6 @@ package com.cloudmore.wage.consumer.config;
 import com.cloudmore.wage.model.UserWage;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,12 +47,12 @@ public class KafkaConsumerConfig {
 
     @Bean
     KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<Integer, UserWage>>
-    kafkaListenerContainerFactory() {
+    kafkaListenerContainerFactory(@Value("${listener.concurrency}") int concurrency, @Value("${listener.poll-timeout}") int pollTimeout) {
         ConcurrentKafkaListenerContainerFactory<Integer, UserWage> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
-        factory.setConcurrency(3);//todo use from config
-        factory.getContainerProperties().setPollTimeout(3000);//todo use from config
+        factory.setConcurrency(concurrency);
+        factory.getContainerProperties().setPollTimeout(pollTimeout);
         return factory;
     }
 
