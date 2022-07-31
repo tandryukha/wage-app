@@ -46,24 +46,15 @@ public class WageControllerIT {
             .withUsername("admin")
             .withPassword("admin");
 
-//    static KafkaContainer kafka;
-//    static {
-//        kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1"));
-//        kafka.start();
-//    }
-
-//    @Autowired
-//    private KafkaAdmin admin;
-
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
     @MockBean
-    private WageListener wageListener;
+    private WageListener wageListener;//no need to listen
 
     @Test
-    public void shouldCreateRetrieveWage() throws Exception {
+    public void shouldPersistWageCorrectly() throws Exception {
         Instant time = Instant.now();
         UserWage userWage = UserWage.builder()
                 .name("Bill")
@@ -98,8 +89,6 @@ public class WageControllerIT {
 
     @DynamicPropertySource
     public static void properties(DynamicPropertyRegistry registry) {
-//        registry.add("spring.kafka.bootstrap-servers", kafka::getBootstrapServers);
-
         registry.add("spring.datasource.url", mySqlDB::getJdbcUrl);
         registry.add("spring.datasource.username", mySqlDB::getUsername);
         registry.add("spring.datasource.password", mySqlDB::getPassword);

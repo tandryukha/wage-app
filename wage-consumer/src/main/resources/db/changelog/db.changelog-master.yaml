@@ -8,8 +8,8 @@ databaseChangeLog:
         id         BIGINT AUTO_INCREMENT NOT NULL,
         name       VARCHAR(255)          NOT NULL,
         surname    VARCHAR(255)          NOT NULL,
-        wage       DECIMAL               NOT NULL,
-        event_time datetime              NOT NULL,
+        wage       DECIMAL(10,2)               NOT NULL,
+        event_time TIMESTAMP(6)              NOT NULL,
         CONSTRAINT pk_wage PRIMARY KEY (id));
       rollback:
         DROP TABLE if exists wage;

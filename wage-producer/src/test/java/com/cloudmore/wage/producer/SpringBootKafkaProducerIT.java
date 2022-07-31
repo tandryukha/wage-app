@@ -25,8 +25,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -90,7 +92,7 @@ public class SpringBootKafkaProducerIT {
         UserWage userWage = UserWage.builder()
                 .name("Bill")
                 .surname("Gates")
-                .wage(1000000.4)
+                .wage(BigDecimal.valueOf(1000000.4))
                 .eventTime(Instant.now())
                 .build();
         wageController.publishWage(userWage);
