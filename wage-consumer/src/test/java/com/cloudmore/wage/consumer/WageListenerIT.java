@@ -6,18 +6,17 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.AdminClient;
-import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.kafka.support.serializer.JsonSerializer;
@@ -37,8 +36,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -49,8 +50,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext
 @Slf4j
 @AutoConfigureMockMvc
-public class SpringBootWageListenerIT {
+/**
+ * Testing Kafka + REST + JPA levels
+ */
+public class WageListenerIT {
 
+    public static final Instant EVENT_DATE = Instant.now();
     @Container
     public static MySQLContainer<?> mySqlDB = new MySQLContainer<>("mysql:8.0.30")
             .withDatabaseName("wage-db")
@@ -72,40 +77,41 @@ public class SpringBootWageListenerIT {
     @Value("${messaging.user-wage-topic}")
     private String topicName;
 
+    @BeforeEach
+    void setUp() {
+        createTopic();
+    }
+
     @Test
     public void shouldReceiveWage() throws Exception {
-        NewTopic topic1 = TopicBuilder.name(topicName).build();
+        getProducer().send(new ProducerRecord<>(topicName, getUserWage(1000000.4, EVENT_DATE))).get();
 
-        AdminClient client = AdminClient.create(admin.getConfigurationProperties());
-        client.createTopics(Collections.singletonList(topic1));
-
-        Instant now = Instant.now();
-        UserWage inputUserWage = UserWage.builder()
-                .name("Bill")
-                .surname("Gates")
-                .wage(BigDecimal.valueOf(1000000.4))
-                .eventTime(now)
-                .build();
-        UserWage outputUserWage = UserWage.builder()
-                .name("Bill")
-                .surname("Gates")
-                .wage(BigDecimal.valueOf(1100000.44))
-                .eventTime(now)
-                .build();
-
-        getProducer().send(new ProducerRecord<>(topicName, inputUserWage)).get();
-
-        Thread.sleep(1000);//todo use awaitable library instead
-
-        List<UserWage> actual = objectMapper.readValue(mockMvc.perform(get("/wage"))
-                .andExpect(status().isOk())
-                .andReturn()
-                .getResponse()
-                .getContentAsString(), new TypeReference<>() {
+        await().atMost(20, TimeUnit.SECONDS).until(() -> {
+            List<UserWage> actual = objectMapper.readValue(mockMvc.perform(get("/wage"))
+                    .andExpect(status().isOk())
+                    .andReturn()
+                    .getResponse()
+                    .getContentAsString(), new TypeReference<>() {
+            });
+            if (actual.isEmpty()) return false;
+            assertThat(actual).isEqualTo(List.of(getUserWage(1100000.44, EVENT_DATE)));
+            return true;
         });
 
-        assertThat(actual).isEqualTo(List.of(outputUserWage));
+    }
 
+    private void createTopic() {
+        AdminClient client = AdminClient.create(admin.getConfigurationProperties());
+        client.createTopics(Collections.singletonList(TopicBuilder.name(topicName).build()));
+    }
+
+    private static UserWage getUserWage(double val, Instant now) {
+        return UserWage.builder()
+                .name("Bill")
+                .surname("Gates")
+                .wage(BigDecimal.valueOf(val))
+                .eventTime(now)
+                .build();
     }
 
     @NotNull
@@ -115,8 +121,7 @@ public class SpringBootWageListenerIT {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
 
-        KafkaProducer<Integer, UserWage> producer = new KafkaProducer(props);
-        return producer;
+        return (KafkaProducer<Integer, UserWage>) new KafkaProducer(props);
     }
 
     @DynamicPropertySource

@@ -38,6 +38,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(OutputCaptureExtension.class)
 @Slf4j
 @AutoConfigureMockMvc
+/**
+ * Testing REST + JPA level
+ */
 public class WageControllerIT {
 
     @Container
