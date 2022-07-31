@@ -30,7 +30,6 @@ import org.testcontainers.utility.DockerImageName;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -85,7 +84,7 @@ public class SpringBootWageListenerIT {
 
         producer.send(new ProducerRecord<>(topicName, userWage)).get();
 
-        Thread.sleep(1000);
+        Thread.sleep(1000);//todo avoid
         assertThat(output).contains("UserWage{name='Bill', surname='Gates', wage=1100000.44}");
     }
 
