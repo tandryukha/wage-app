@@ -52,7 +52,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Testing Kafka + REST + JPA levels
  */
-public class WageListenerIT {
+public class WageListenerTest {
 
     public static final Instant EVENT_DATE = Instant.now();
     @Container

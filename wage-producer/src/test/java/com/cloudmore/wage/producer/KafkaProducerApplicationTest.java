@@ -44,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext
 @Slf4j
 @AutoConfigureMockMvc
-public class SpringBootKafkaProducerIT {
+public class KafkaProducerApplicationTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired

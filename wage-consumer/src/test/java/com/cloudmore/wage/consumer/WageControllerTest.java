@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Testing REST + JPA level
  */
-public class WageControllerIT {
+public class WageControllerTest {
 
     @Container
     public static MySQLContainer<?> mySqlDB = new MySQLContainer<>("mysql:8.0.30")
@@ -95,6 +95,8 @@ public class WageControllerIT {
         registry.add("spring.datasource.url", mySqlDB::getJdbcUrl);
         registry.add("spring.datasource.username", mySqlDB::getUsername);
         registry.add("spring.datasource.password", mySqlDB::getPassword);
+
+        registry.add("spring.kafka.bootstrap-servers", () -> "we-dont-use-kafka-in-this-test-but-need-this-mock-value");
     }
 
 }
