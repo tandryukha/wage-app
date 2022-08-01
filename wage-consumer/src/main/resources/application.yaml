@@ -4,11 +4,13 @@ wage:
   tax-rate: 0.1
 spring:
   kafka:
-    bootstrap-servers: 127.0.0.1:9092
+    properties:
+      bootstrap:
+        servers: kafka:9092
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/wage
-    username: root
-    password: root
+    url: jdbc:mysql://mysql:3306/wage
+    username: wage
+    password: wage
   liquibase:
     enabled: true
 listener:

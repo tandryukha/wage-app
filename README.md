@@ -14,3 +14,13 @@ For further reference, please consider the following sections:
 docker-compose down --rmi all  
 docker-compose up --force-recreate
 
+# API
+### Send wage
+curl --location --request POST 'http://localhost:8081/wage' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+"name":"Bill",
+"surname":"Gates",
+"wage":1000000.4,
+"eventTime":"2022-01-01T00:00:00Z"
+}'

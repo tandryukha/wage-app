@@ -35,14 +35,11 @@ services:
       - mysql
       - kafka
     environment:
-#      MYSQL_HOST: product-mysqldb
-#      MYSQL_USER: oot
-#      MYSQL_PASSWORD: root
-#      MYSQL_PORT: 3306
-      spring.kafka.properties.bootstrap.servers: kafka:9092
-      spring.datasource.url: wage
-      spring.datasource.username: wage
-      spring.datasource.password: wage
+      MYSQL_HOST: mysql
+      MYSQL_USER: wage
+      MYSQL_PASSWORD: wage
+      MYSQL_PORT: 3306
+      KAFKA_SERVERS: kafka:9092
     ports:
       - "8080:8080"
     expose:
@@ -54,7 +51,7 @@ services:
     depends_on:
       - kafka
     environment:
-      spring.kafka.properties.bootstrap.servers: kafka:9092
+      KAFKA_SERVERS: kafka:9092
     ports:
       - "8081:8080"
     expose:
