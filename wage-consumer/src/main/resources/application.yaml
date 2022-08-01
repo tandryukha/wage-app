@@ -1,0 +1,16 @@
+messaging:
+  user-wage-topic: user-wage-topic
+wage:
+  tax-rate: 0.1
+spring:
+  kafka:
+    bootstrap-servers: 127.0.0.1:9092
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/wage
+    username: root
+    password: root
+  liquibase:
+    enabled: true
+listener:
+  concurrency: 3
+  poll-timeout: 3000

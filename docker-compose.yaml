@@ -1,0 +1,61 @@
+services:
+  mysql:
+    image: mysql:8.0.30
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: wage
+      MYSQL_DATABASE: wage
+      MYSQL_USER: wage
+      MYSQL_PASSWORD: wage
+    ports:
+      - "3306:3306"
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+    #    expose:
+    #      - "9093"
+    environment:
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+      KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    depends_on:
+      - zookeeper
+#    volumes:
+#      - ./:/etc/kafka
+  consumer:
+    build:
+      context: .
+      dockerfile: wage-consumer.Dockerfile
+    depends_on:
+      - mysql
+      - kafka
+    environment:
+#      MYSQL_HOST: product-mysqldb
+#      MYSQL_USER: oot
+#      MYSQL_PASSWORD: root
+#      MYSQL_PORT: 3306
+      spring.kafka.properties.bootstrap.servers: kafka:9092
+      spring.datasource.url: wage
+      spring.datasource.username: wage
+      spring.datasource.password: wage
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
+  producer:
+    build:
+      context: .
+      dockerfile: wage-producer.Dockerfile
+    depends_on:
+      - kafka
+    environment:
+      spring.kafka.properties.bootstrap.servers: kafka:9092
+    ports:
+      - "8081:8080"
+    expose:
+      - "8081"
