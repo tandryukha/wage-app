@@ -39,13 +39,9 @@ services:
     depends_on:
       - mysql
       - kafka-server
-    environment:
-      MYSQL_HOST: mysql
-      MYSQL_USER: wage
-      MYSQL_PASSWORD: wage
-      MYSQL_PORT: 3306
     networks:
       - springboot-network
+    restart: on-failure
     ports:
       - "8080:8080"
     expose:
@@ -58,6 +54,7 @@ services:
       - kafka-server
     networks:
       - springboot-network
+    restart: on-failure
     ports:
       - "8081:8080"
     expose:
