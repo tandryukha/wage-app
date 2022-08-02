@@ -30,8 +30,6 @@ services:
       - springboot-network
     depends_on:
       - zookeeper
-    volumes:
-      - ${HOME}/Docker/log:/opt/kafka_2.12-1.0.0/log
   consumer:
     build:
       context: .
@@ -41,11 +39,15 @@ services:
       - kafka-server
     networks:
       - springboot-network
-    restart: on-failure
     ports:
-      - "8080:8080"
+      - "8080"
+#      - 8080
     expose:
       - "8080"
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
   producer:
     build:
       context: .
@@ -56,9 +58,13 @@ services:
       - springboot-network
     restart: on-failure
     ports:
-      - "8081:8080"
+      - "8080"
     expose:
-      - "8081"
+      - "8080"
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
 networks:
   springboot-network:
     driver: bridge

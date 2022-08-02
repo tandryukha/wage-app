@@ -18,5 +18,5 @@ RUN mvn package -DskipTests=true
 ###Image for run
 FROM openjdk:17-jdk-slim as run-image
 ARG JAR_FILE=/application/target/wage-consumer-0.0.1-SNAPSHOT.jar
-COPY --from=build ${JAR_FILE} app2.jar
-ENTRYPOINT ["java","-jar","/app2.jar"]
+COPY --from=build ${JAR_FILE} app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
