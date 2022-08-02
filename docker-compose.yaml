@@ -9,37 +9,43 @@ services:
       MYSQL_PASSWORD: wage
     ports:
       - "3306:3306"
+    networks:
+      - springboot-network
   zookeeper:
     image: wurstmeister/zookeeper
+    networks:
+      - springboot-network
     ports:
       - "2181:2181"
-  kafka:
+  kafka-server:
     image: wurstmeister/kafka
     ports:
       - "9092:9092"
-    #    expose:
-    #      - "9093"
     environment:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
-      KAFKA_ADVERTISED_HOST_NAME: 127.0.0.1
+      KAFKA_ADVERTISED_HOST_NAME: kafka-server
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      ADVERTISED_LISTENERS: PLAINTEXT://kafka-server:9092
+    networks:
+      - springboot-network
     depends_on:
       - zookeeper
-#    volumes:
-#      - ./:/etc/kafka
+    volumes:
+      - ${HOME}/Docker/log:/opt/kafka_2.12-1.0.0/log
   consumer:
     build:
       context: .
       dockerfile: wage-consumer.Dockerfile
     depends_on:
       - mysql
-      - kafka
+      - kafka-server
     environment:
       MYSQL_HOST: mysql
       MYSQL_USER: wage
       MYSQL_PASSWORD: wage
       MYSQL_PORT: 3306
-      KAFKA_SERVERS: kafka:9092
+    networks:
+      - springboot-network
     ports:
       - "8080:8080"
     expose:
@@ -49,10 +55,13 @@ services:
       context: .
       dockerfile: wage-producer.Dockerfile
     depends_on:
-      - kafka
-    environment:
-      KAFKA_SERVERS: kafka:9092
+      - kafka-server
+    networks:
+      - springboot-network
     ports:
       - "8081:8080"
     expose:
       - "8081"
+networks:
+  springboot-network:
+    driver: bridge

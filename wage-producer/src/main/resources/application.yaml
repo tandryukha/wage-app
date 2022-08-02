@@ -5,4 +5,4 @@ spring:
   kafka:
     properties:
       bootstrap:
-        servers: kafka:9092
+        servers: PLAINTEXT://kafka-server:9092

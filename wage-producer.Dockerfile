@@ -1,3 +1,4 @@
+#having this file in parent folder until model package is published to some artifactory
 FROM maven:3.8.5-openjdk-17-slim as compile
 COPY model model
 COPY wage-producer application
