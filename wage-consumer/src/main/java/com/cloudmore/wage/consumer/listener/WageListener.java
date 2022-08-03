@@ -16,9 +16,9 @@ import org.springframework.stereotype.Component;
 public class WageListener {
     private final WageService wageService;
 
-    @KafkaListener(groupId = "groups", topics = "${messaging.user-wage-topic}")
+    @KafkaListener(groupId = "${messaging.consumer-group-name}", topics = "${messaging.user-wage-topic}")
     public void receive(@Payload UserWage userWage, @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition) {
-        log.info("partition={} received payload='{}'", partition, userWage.toString());
+        log.info("eceived payload='{}' from partition={}", userWage, partition);
         wageService.save(userWage);
     }
 

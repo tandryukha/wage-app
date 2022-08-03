@@ -125,7 +125,7 @@ public class WageListenerTest {
 
     @DynamicPropertySource
     public static void properties(DynamicPropertyRegistry registry) {
-        registry.add("spring.kafka.bootstrap-servers", kafka::getBootstrapServers);
+        registry.add("spring.kafka.properties.bootstrap.servers", kafka::getBootstrapServers);
 
         registry.add("spring.datasource.url", mySqlDB::getJdbcUrl);
         registry.add("spring.datasource.username", mySqlDB::getUsername);

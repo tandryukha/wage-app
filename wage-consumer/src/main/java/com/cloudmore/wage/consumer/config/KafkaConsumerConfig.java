@@ -25,10 +25,10 @@ public class KafkaConsumerConfig {
     @Value(value = "${spring.kafka.properties.bootstrap.servers}")
     private String bootstrapAddress;
 
-    private Map<String, Object> consumerConfig() {
+    private Map<String, Object> consumerConfig(MessagingConfig messagingConfig) {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "group");
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, messagingConfig.getConsumerGroupName());
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, ErrorHandlingDeserializer.class);
@@ -40,19 +40,18 @@ public class KafkaConsumerConfig {
         return props;
     }
 
-    @Bean
-    public ConsumerFactory<Integer, UserWage> consumerFactory() {
-        return new DefaultKafkaConsumerFactory<>(consumerConfig());
+    public ConsumerFactory<Integer, UserWage> consumerFactory(MessagingConfig messagingConfig) {
+        return new DefaultKafkaConsumerFactory<>(consumerConfig(messagingConfig));
     }
 
     @Bean
     KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<Integer, UserWage>>
-    kafkaListenerContainerFactory(@Value("${listener.concurrency}") int concurrency, @Value("${listener.poll-timeout}") int pollTimeout) {
+    kafkaListenerContainerFactory(MessagingConfig messagingConfig) {
         ConcurrentKafkaListenerContainerFactory<Integer, UserWage> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
-        factory.setConcurrency(concurrency);
-        factory.getContainerProperties().setPollTimeout(pollTimeout);
+        factory.setConsumerFactory(consumerFactory(messagingConfig));
+        factory.setConcurrency(messagingConfig.getConcurrency());
+        factory.getContainerProperties().setPollTimeout(messagingConfig.getPollTimeout());
         return factory;
     }
 

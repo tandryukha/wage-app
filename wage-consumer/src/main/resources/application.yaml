@@ -1,5 +1,8 @@
 messaging:
   user-wage-topic: user-wage-topic
+  concurrency: 1
+  consumer-group-name: wage-consumer-group
+  poll-timeout: 3000
 wage:
   tax-rate: 0.1
 spring:

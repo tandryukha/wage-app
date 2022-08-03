@@ -95,8 +95,6 @@ public class WageControllerTest {
         registry.add("spring.datasource.url", mySqlDB::getJdbcUrl);
         registry.add("spring.datasource.username", mySqlDB::getUsername);
         registry.add("spring.datasource.password", mySqlDB::getPassword);
-
-        registry.add("spring.kafka.bootstrap-servers", () -> "we-dont-use-kafka-in-this-test-but-need-this-mock-value");
     }
 
 }
