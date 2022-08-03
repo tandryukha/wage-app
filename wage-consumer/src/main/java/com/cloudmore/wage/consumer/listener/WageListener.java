@@ -5,6 +5,9 @@ import com.cloudmore.wage.model.UserWage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -14,8 +17,8 @@ public class WageListener {
     private final WageService wageService;
 
     @KafkaListener(groupId = "groups", topics = "${messaging.user-wage-topic}")
-    public void receive(UserWage userWage) {
-        log.info("received payload='{}'", userWage.toString());
+    public void receive(@Payload UserWage userWage, @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition) {
+        log.info("partition={} received payload='{}'", partition, userWage.toString());
         wageService.save(userWage);
     }
 

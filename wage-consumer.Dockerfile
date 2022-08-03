@@ -1,4 +1,4 @@
-#having this file in parent folder until model package is published to some artifactory
+#having this file in parent folder until model package is published to some artifactory to be available without the need to build local model module
 FROM maven:3.8.5-openjdk-17-slim as compile
 COPY model model
 COPY wage-consumer application
@@ -6,10 +6,6 @@ WORKDIR /model
 RUN mvn clean install
 WORKDIR /application
 RUN mvn clean compile
-
-#TESTS
-FROM compile as test
-RUN mvn test
 
 #package JAR
 FROM compile as build
