@@ -7,3 +7,6 @@ spring:
     properties:
       bootstrap:
         servers: PLAINTEXT://kafka-server:9092
+  mvc:
+    path-match:
+      matching-strategy: ant_path_matcher

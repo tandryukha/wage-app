@@ -1,6 +1,6 @@
 messaging:
   user-wage-topic: user-wage-topic
-  concurrency: 1
+  concurrency: 5
   consumer-group-name: wage-consumer-group
   poll-timeout: 3000
 wage:
@@ -10,12 +10,12 @@ spring:
     properties:
       bootstrap:
         servers: PLAINTEXT://kafka-server:9092
+  mvc:
+    path-match:
+      matching-strategy: ant_path_matcher
   datasource:
     url: jdbc:mysql://mysql:3306/wage
     username: wage
     password: wage
   liquibase:
     enabled: true
-listener:
-  concurrency: 3
-  poll-timeout: 3000

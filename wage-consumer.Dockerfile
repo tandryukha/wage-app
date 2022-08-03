@@ -1,14 +1,10 @@
 #having this file in parent folder until model package is published to some artifactory to be available without the need to build local model module
-FROM maven:3.8.5-openjdk-17-slim as compile
+FROM maven:3.8.5-openjdk-17-slim as build
 COPY model model
 COPY wage-consumer application
 WORKDIR /model
 RUN mvn clean install
 WORKDIR /application
-RUN mvn clean compile
-
-#package JAR
-FROM compile as build
 RUN mvn package -DskipTests=true
 
 ###Image for run

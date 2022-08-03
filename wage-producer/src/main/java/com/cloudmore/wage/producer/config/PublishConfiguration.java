@@ -12,8 +12,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 public class PublishConfiguration {
 
     @Bean
-    public WagePublishService wagePublishService(@Value("${messaging.user-wage-topic}") String wageTopic,
+    public WagePublishService wagePublishService(MessagingConfig messagingConfig,
                                                  KafkaTemplate<Integer, UserWage> kafkaTemplate) {
-        return new WagePublishServiceImpl(wageTopic, kafkaTemplate);
+        return new WagePublishServiceImpl(messagingConfig.getUserWageTopic(), kafkaTemplate);
     }
 }
