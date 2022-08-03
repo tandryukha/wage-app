@@ -27,3 +27,11 @@ docker-compose up --force-recreate
 
 ### Receive wages
 `curl --location --request GET 'http://localhost:8080/wage'`
+
+# Scaling
+## How to scale producer
+- Horizontal scaling of the producer instance
+
+## How to scale consumer
+- Running multiple consumers concurrently in the same instance(listener concurrency setting)
+- Horizontal scaling of the producer instance
