@@ -1,5 +1,6 @@
 messaging:
   user-wage-topic: user-wage-topic
+  partitions: 10
 
 spring:
   kafka:
