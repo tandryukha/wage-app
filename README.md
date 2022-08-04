@@ -71,7 +71,9 @@ Common dependencies, version is not used from parent to reduce coupling between
 consumer and producer and for smooth microservice extraction later.
 
 # Further development/improvement notes
-TODO
+- [Crash testing] Validate message will not get lost if database connection lost
+- Process/persist messages in bulk
+- Split producer/consumer into separate code-bases - it can help reduce code contention without any major drawbacks 
 
 ## For further reference, please consider the following sections:
 
