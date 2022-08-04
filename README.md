@@ -32,11 +32,20 @@ Also avoid mapping multiple instances to the same specific port to allow dynamic
       replicas: 2
 
 # How to use custom config files
+## Custom config files with docker compose
+Mount folder with custom config in docker-compose.yaml
 
+`volumes:
+  - /path/to/folder/with/custom/config:/configurations`
 
-# Implementation details
-Common dependencies, version is not used from parent to reduce coupling between 
-consumer and producer and for smooth microservice extraction later.
+## Custom config file with individual docker container
+1. Build docker image as usual 
+   
+`docker build -f <Docker-file-name> .`
+2. Run container with custom property file
+
+`docker container run -p <port-to-expose>:8080 
+-v /path/to/folder/with/custom/config:/config <image-name>`
 
 # Open API
 Run docker-compose and navigate to producer and consumer OpenAPI documentation pages
@@ -57,7 +66,14 @@ Run docker-compose and navigate to producer and consumer OpenAPI documentation p
 ## List stored wages
 `curl --location --request GET 'http://localhost:8081/wage'`
 
-For further reference, please consider the following sections:
+# Implementation details
+Common dependencies, version is not used from parent to reduce coupling between
+consumer and producer and for smooth microservice extraction later.
+
+# Further development/improvement notes
+TODO
+
+## For further reference, please consider the following sections:
 
 * [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
 * [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.7.2/maven-plugin/reference/html/)

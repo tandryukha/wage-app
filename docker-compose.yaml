@@ -39,6 +39,9 @@ services:
       - kafka-server
     networks:
       - springboot-network
+#   Uncomment to use custom config location
+#    volumes:
+#      - /Users/ataran/Documents/wage-configs/consumer:/config
     ports:
       - "8081:8080"
     expose:
@@ -55,7 +58,9 @@ services:
       - kafka-server
     networks:
       - springboot-network
-    restart: on-failure
+#   Uncomment to use custom config location
+#    volumes:
+#      - /Users/ataran/Documents/wage-configs/producer:/config
     ports:
       - "8082:8080"
     expose:
