@@ -59,18 +59,8 @@ public class WageControllerTest {
     @Test
     public void shouldPersistWageCorrectly() throws Exception {
         Instant time = Instant.now();
-        UserWage userWage = UserWage.builder()
-                .name("Bill")
-                .surname("Gates")
-                .wage(BigDecimal.valueOf(1000000.4))
-                .eventTime(time)
-                .build();
-        UserWage expected = UserWage.builder()
-                .name("Bill")
-                .surname("Gates")
-                .wage(BigDecimal.valueOf(1100000.44))
-                .eventTime(time)
-                .build();
+        UserWage userWage = getUserWage(1000000.4, time);
+        UserWage expected = getUserWage(1100000.44, time);
 
         mockMvc.perform(post("/wage")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -86,8 +76,16 @@ public class WageControllerTest {
         });
 
         assertThat(actual).isEqualTo(List.of(expected));
+    }
 
-
+    private static UserWage getUserWage(double wage, Instant time) {
+        UserWage expected = UserWage.builder()
+                .name("Bill")
+                .surname("Gates")
+                .wage(BigDecimal.valueOf(wage))
+                .eventTime(time)
+                .build();
+        return expected;
     }
 
     @DynamicPropertySource

@@ -35,7 +35,6 @@ public class KafkaProducerConfig {
         return new DefaultKafkaProducerFactory<>(producerConfig());
     }
 
-
     @Bean
     public KafkaTemplate<Integer, UserWage> kafkaTemplate(ProducerFactory<Integer, UserWage> producerFactory) {
         return new KafkaTemplate<>(producerFactory);

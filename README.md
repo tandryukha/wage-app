@@ -2,7 +2,7 @@
 This is the parent(aggregator) project that includes wage producer and consumer applications. 
 
 # Building
-Run `mvn clean verify` to run all the tests for all modules
+Run `./mvnw clean verify` to run all the tests for all modules
 
 # Running
 ## Pre-requisites
