@@ -49,7 +49,7 @@ public class KafkaProducerApplicationTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    static KafkaContainer kafka;
+    static final KafkaContainer kafka;
     @Value("${messaging.user-wage-topic}")
     private String topicName;
 
@@ -92,13 +92,12 @@ public class KafkaProducerApplicationTest {
     }
 
     private static UserWage getUserWage() {
-        UserWage userWage = UserWage.builder()
+        return UserWage.builder()
                 .name("Bill")
                 .surname("Gates")
                 .wage(BigDecimal.valueOf(1000000.4))
                 .eventTime(Instant.now())
                 .build();
-        return userWage;
     }
 
     private static KafkaConsumer<Integer, UserWage> createTestConsumer(String topicName) {

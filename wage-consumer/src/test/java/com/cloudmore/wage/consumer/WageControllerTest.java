@@ -32,19 +32,19 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
+/**
+ * Testing REST + JPA level
+ */
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext
 @ExtendWith(OutputCaptureExtension.class)
 @Slf4j
 @AutoConfigureMockMvc
-/**
- * Testing REST + JPA level
- */
 public class WageControllerTest {
 
     @Container
-    public static MySQLContainer<?> mySqlDB = new MySQLContainer<>("mysql:8.0.30")
+    public static final MySQLContainer<?> mySqlDB = new MySQLContainer<>("mysql:8.0.30")
             .withDatabaseName("wage-db")
             .withUsername("admin")
             .withPassword("admin");
@@ -79,13 +79,12 @@ public class WageControllerTest {
     }
 
     private static UserWage getUserWage(double wage, Instant time) {
-        UserWage expected = UserWage.builder()
+        return UserWage.builder()
                 .name("Bill")
                 .surname("Gates")
                 .wage(BigDecimal.valueOf(wage))
                 .eventTime(time)
                 .build();
-        return expected;
     }
 
     @DynamicPropertySource

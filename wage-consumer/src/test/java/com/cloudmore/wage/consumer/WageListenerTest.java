@@ -44,24 +44,24 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
+/**
+ * Testing Kafka + REST + JPA levels
+ */
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext
 @Slf4j
 @AutoConfigureMockMvc
-/**
- * Testing Kafka + REST + JPA levels
- */
 public class WageListenerTest {
 
     public static final Instant EVENT_DATE = Instant.now();
     @Container
-    public static MySQLContainer<?> mySqlDB = new MySQLContainer<>("mysql:8.0.30")
+    public static final MySQLContainer<?> mySqlDB = new MySQLContainer<>("mysql:8.0.30")
             .withDatabaseName("wage-db")
             .withUsername("admin")
             .withPassword("admin");
 
-    static KafkaContainer kafka;
+    static final KafkaContainer kafka;
     static {
         kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1"));
         kafka.start();
@@ -104,12 +104,12 @@ public class WageListenerTest {
         client.createTopics(Collections.singletonList(TopicBuilder.name(topicName).build()));
     }
 
-    private static UserWage getUserWage(double val, Instant now) {
+    private static UserWage getUserWage(double val, Instant time) {
         return UserWage.builder()
                 .name("Bill")
                 .surname("Gates")
                 .wage(BigDecimal.valueOf(val))
-                .eventTime(now)
+                .eventTime(time)
                 .build();
     }
 

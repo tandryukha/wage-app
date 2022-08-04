@@ -18,7 +18,7 @@ public class WageListener {
 
     @KafkaListener(groupId = "${messaging.consumer-group-name}", topics = "${messaging.user-wage-topic}")
     public void receive(@Payload UserWage userWage, @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition) {
-        log.info("eceived payload='{}' from partition={}", userWage, partition);
+        log.info("received payload='{}' from partition={}", userWage, partition);
         wageService.save(userWage);
     }
 
